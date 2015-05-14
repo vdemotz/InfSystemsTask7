@@ -1,12 +1,18 @@
 package ch.ethz.globis.isk.persistence.mongo;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
+
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.lang.reflect.Field;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -15,7 +21,11 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
+
+import com.mongodb.WriteResult;
+
 import ch.ethz.globis.isk.domain.DomainObject;
 import ch.ethz.globis.isk.persistence.Dao;
 import ch.ethz.globis.isk.util.Filter;
@@ -96,6 +106,13 @@ public abstract class MongoDao<K extends Serializable, T extends DomainObject> i
 
     @Override
     public boolean delete(T entity) {
+    	if (entity == null) {
+    		return false;
+    	} else if (mongoOperations.findById(entity.getId(), getStoredClass(), collection()) == null) {
+    		return false;
+    	}
+    	mongoOperations.remove(entity);
+    	return true;
     }
 
     @Override
@@ -117,6 +134,21 @@ public abstract class MongoDao<K extends Serializable, T extends DomainObject> i
 
     @Override
     public <S extends T> S update(S entity) {
+		Query query = new Query();
+		query.addCriteria(Criteria.where("id").is(entity.getId()));
+		Update update = new Update();
+		try {
+			for (PropertyDescriptor pd : Introspector.getBeanInfo(entity.getClass()).getPropertyDescriptors()) {
+				  if (pd.getReadMethod() != null && !"class".equals(pd.getName())) {
+					  update.set(pd.getName(), pd.getReadMethod().invoke(entity));
+				  }
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		mongoOperations.upsert(query, update, getStoredClass());
+    	return entity;
+
     }
 
     protected List<T> queryByReferenceIdOrderByYear(String referenceName, String referenceId) {

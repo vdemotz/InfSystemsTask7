@@ -6,12 +6,16 @@ import ch.ethz.globis.isk.service.cache.RequestResultCache;
 import ch.ethz.globis.isk.util.Filter;
 import ch.ethz.globis.isk.util.OrderFilter;
 import ch.ethz.globis.isk.validation.ValidationUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+
 import javax.validation.ConstraintViolation;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -74,6 +78,7 @@ public abstract class BaseServiceImpl<K extends Serializable, T extends DomainOb
     }
 
     public List<ConstraintViolation> check(T entity) {
+    	return new ArrayList<ConstraintViolation>();
     }
 
     public <S extends T> S insert(S entity) {
@@ -93,6 +98,7 @@ public abstract class BaseServiceImpl<K extends Serializable, T extends DomainOb
     }
 
     private <S extends T> S doInsert(S entity) {
+    	return dao().insert(entity);
     }
 
     public <S extends T> Iterable<S> insert(Iterable<S> entities) {
@@ -133,6 +139,7 @@ public abstract class BaseServiceImpl<K extends Serializable, T extends DomainOb
     }
 
     private boolean doDelete(T entity) {
+    	return dao().delete(entity);
     }
 
     public T createEntity() {

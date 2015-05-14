@@ -13,7 +13,7 @@ public class MongoInProceedings extends MongoPublication implements InProceeding
     private String pages;
 
     @DBRef(lazy = true)
-    private Proceedings parentPublication;
+    private Proceedings proceedings;
 
     public MongoInProceedings() {
     }
@@ -35,11 +35,11 @@ public class MongoInProceedings extends MongoPublication implements InProceeding
     }
 
     public Proceedings getProceedings() {
-        return parentPublication;
+        return proceedings;
     }
 
     public void setProceedings(Proceedings parentPublication) {
-        this.parentPublication = parentPublication;
+        this.proceedings = parentPublication;
     }
 
     @Override

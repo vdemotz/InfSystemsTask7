@@ -115,10 +115,13 @@ public abstract class Db4oDao<K extends Serializable, T extends DomainObject> im
 
     @Override
     public boolean delete(T entity) {
+    	db.delete(entity);
+    	return true;
     }
 
     @Override
     public <S extends T> S update(S entity) {
+        return insert(entity);
     }
 
     protected Query queryByReferenceIdOrderByYear(String referenceName, String referenceId) {

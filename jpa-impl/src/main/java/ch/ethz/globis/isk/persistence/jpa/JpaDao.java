@@ -102,10 +102,22 @@ public abstract class JpaDao<K extends Serializable, T extends DomainObject> imp
 
     @Override
     public <S extends T> S update(S entity) {
+    	if (!delete(entity)) {
+    		return null;
+    	}
+    	return insert(entity);
     }
 
     @Override
     public boolean delete(T entity) {
+    	if (entity == null) {
+    		return false;
+    	}
+    	String deleteEntityQuery = "DELETE FROM %s WHERE id=%s";
+    	deleteEntityQuery = String.format(deleteEntityQuery, getStoredClass().getName(), entity.getId());
+    	Query query = em.createQuery(deleteEntityQuery);
+    	query.executeUpdate();
+    	return true;
     }
 
     protected abstract <S extends T> Class<S> getStoredClass();

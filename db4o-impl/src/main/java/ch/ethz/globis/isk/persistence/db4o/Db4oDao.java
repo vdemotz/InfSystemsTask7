@@ -6,11 +6,16 @@ import ch.ethz.globis.isk.util.Filter;
 import ch.ethz.globis.isk.util.Operator;
 import ch.ethz.globis.isk.util.Order;
 import ch.ethz.globis.isk.util.OrderFilter;
+
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
 import com.db4o.query.Query;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
@@ -121,8 +126,21 @@ public abstract class Db4oDao<K extends Serializable, T extends DomainObject> im
 
     @Override
     public <S extends T> S update(S entity) {
-        return insert(entity);
-    }
+    	Map<String, Filter> filterMap = new HashMap<>();
+        filterMap.put("id", new Filter(Operator.EQUAL, entity.getId()));
+        T prevEntity = findOneByFilter(filterMap);
+		try {
+			for (PropertyDescriptor pd : Introspector.getBeanInfo(entity.getClass()).getPropertyDescriptors()) {
+				  if (pd.getReadMethod() != null && !"class".equals(pd.getName())) {
+					  pd.getWriteMethod().invoke(prevEntity, pd.getReadMethod().invoke(entity));
+				  }
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		db.store(prevEntity);
+		return entity;
+	}
 
     protected Query queryByReferenceIdOrderByYear(String referenceName, String referenceId) {
         final String FIELD_ID = "id";

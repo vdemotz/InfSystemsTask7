@@ -1,23 +1,25 @@
 package ch.ethz.globis.isk.service;
 
-import ch.ethz.globis.isk.domain.DomainObject;
-import ch.ethz.globis.isk.persistence.Dao;
-import ch.ethz.globis.isk.service.cache.RequestResultCache;
-import ch.ethz.globis.isk.util.Filter;
-import ch.ethz.globis.isk.util.OrderFilter;
-import ch.ethz.globis.isk.validation.ValidationUtils;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 
-import javax.validation.ConstraintViolation;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import ch.ethz.globis.isk.domain.DomainObject;
+import ch.ethz.globis.isk.persistence.Dao;
+import ch.ethz.globis.isk.service.cache.RequestResultCache;
+import ch.ethz.globis.isk.util.Filter;
+import ch.ethz.globis.isk.util.OrderFilter;
+import ch.ethz.globis.isk.validation.ValidationUtils;
 
 public abstract class BaseServiceImpl<K extends Serializable, T extends DomainObject> implements BaseService<K, T> {
 
@@ -33,6 +35,8 @@ public abstract class BaseServiceImpl<K extends Serializable, T extends DomainOb
 
     @Autowired
     private Environment environment;
+    
+    private Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     public abstract Dao<K, T> dao();
 
@@ -78,7 +82,9 @@ public abstract class BaseServiceImpl<K extends Serializable, T extends DomainOb
     }
 
     public List<ConstraintViolation> check(T entity) {
-    	return new ArrayList<ConstraintViolation>();
+    	List<ConstraintViolation> violations = new ArrayList<ConstraintViolation>();
+    	violations.addAll(validator.validate(entity));
+    	return violations;
     }
 
     public <S extends T> S insert(S entity) {

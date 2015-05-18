@@ -1,22 +1,29 @@
 package ch.ethz.globis.isk.persistence.jpa;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
 import ch.ethz.globis.isk.domain.DomainObject;
 import ch.ethz.globis.isk.persistence.Dao;
 import ch.ethz.globis.isk.util.Filter;
 import ch.ethz.globis.isk.util.Operator;
 import ch.ethz.globis.isk.util.Order;
 import ch.ethz.globis.isk.util.OrderFilter;
-import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
-import javax.persistence.criteria.*;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public abstract class JpaDao<K extends Serializable, T extends DomainObject> implements Dao<K, T> {
 
@@ -102,10 +109,7 @@ public abstract class JpaDao<K extends Serializable, T extends DomainObject> imp
 
     @Override
     public <S extends T> S update(S entity) {
-    	if (!delete(entity)) {
-    		return null;
-    	}
-    	return insert(entity);
+    	return em.merge(entity);
     }
 
     @Override
@@ -113,11 +117,13 @@ public abstract class JpaDao<K extends Serializable, T extends DomainObject> imp
     	if (entity == null) {
     		return false;
     	}
-    	String deleteEntityQuery = "DELETE FROM %s WHERE id=%s";
-    	deleteEntityQuery = String.format(deleteEntityQuery, getStoredClass().getName(), entity.getId());
-    	Query query = em.createQuery(deleteEntityQuery);
-    	query.executeUpdate();
-    	return true;
+    	try{
+    		em.remove(entity);
+    		return true;
+    	}
+    	catch (IllegalArgumentException e){
+    		return false;
+    	}
     }
 
     protected abstract <S extends T> Class<S> getStoredClass();

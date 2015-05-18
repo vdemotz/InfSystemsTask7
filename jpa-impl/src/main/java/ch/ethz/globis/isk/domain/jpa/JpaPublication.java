@@ -1,15 +1,32 @@
 package ch.ethz.globis.isk.domain.jpa;
 
-import ch.ethz.globis.isk.domain.Person;
-import ch.ethz.globis.isk.domain.Publication;
-import org.hibernate.annotations.*;
-import javax.persistence.CascadeType;
-import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.DiscriminatorOptions;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.ForeignKey;
+import org.hibernate.annotations.Index;
+
+import ch.ethz.globis.isk.domain.Person;
+import ch.ethz.globis.isk.domain.Publication;
 
 @Entity(name = "Publication")
 @Table(name = "publication")
@@ -23,12 +40,14 @@ public class JpaPublication implements Publication {
 
     @Column(length = 1000)
     @Index(name = "index_title")
+    @NotNull
     private String title;
 
     @Column(length = 500)
     private String electronicEdition;
 
     @Index(name = "index_year")
+    @Min(1901)
     private int year;
 
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = JpaPerson.class, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })

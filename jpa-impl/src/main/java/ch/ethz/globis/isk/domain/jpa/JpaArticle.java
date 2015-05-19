@@ -5,12 +5,14 @@ import ch.ethz.globis.isk.domain.JournalEdition;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Pattern;
 
 @Entity(name = "Article")
 public class JpaArticle extends JpaPublication implements Article {
 
     private String cdrom;
 
+    @Pattern(regexp="null|[0-9]+-[0-9]+|[0-9]+")
     private String pages;
 
     @ManyToOne(targetEntity = JpaJournalEdition.class)

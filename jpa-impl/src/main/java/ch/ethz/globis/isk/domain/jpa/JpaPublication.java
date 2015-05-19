@@ -16,8 +16,10 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.DiscriminatorOptions;
 import org.hibernate.annotations.Fetch;
@@ -34,8 +36,8 @@ import ch.ethz.globis.isk.domain.Publication;
 @DiscriminatorColumn(name = "publication_type")
 @DiscriminatorOptions(force = true)
 public class JpaPublication implements Publication {
-
-    @Id
+	
+	@Id
     private String id;
 
     @Column(length = 1000)
@@ -48,6 +50,7 @@ public class JpaPublication implements Publication {
 
     @Index(name = "index_year")
     @Min(1901)
+    @Max(2015)
     private int year;
 
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = JpaPerson.class, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
@@ -55,6 +58,8 @@ public class JpaPublication implements Publication {
     @ForeignKey(name = "fk_authors")
     @OrderBy("name")
     @Fetch(value = FetchMode.SUBSELECT)
+    @NotNull
+    @Size(min = 1)
     private Set<Person> authors;
 
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = JpaPerson.class, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })

@@ -5,7 +5,9 @@ import ch.ethz.globis.isk.util.Filter;
 import ch.ethz.globis.isk.util.OrderFilter;
 
 import javax.validation.ConstraintViolation;
+
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +21,7 @@ import java.util.Map;
  * @param <T>               The type of the domain object.
  */
 public interface BaseService<K extends Serializable, T extends DomainObject> {
-
+	
     /**
      * Create an object of type T. This methods is meant to abstract
      * the fact that there could be more implementations of T.

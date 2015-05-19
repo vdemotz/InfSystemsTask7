@@ -2,9 +2,11 @@ package ch.ethz.globis.isk.domain.jpa;
 
 import ch.ethz.globis.isk.domain.Book;
 import ch.ethz.globis.isk.domain.InCollection;
+
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 @Entity(name = "InCollection")
 public class JpaInCollection extends JpaPublication implements InCollection {
@@ -15,6 +17,7 @@ public class JpaInCollection extends JpaPublication implements InCollection {
 
     @ManyToOne(targetEntity = JpaBook.class)
     @JoinColumn(name = "parent_id")
+    @NotNull
     private Book parentPublication;
 
     public JpaInCollection() {

@@ -503,7 +503,7 @@ public class PublicationConstraintTest {
             article.setTitle(TITLE);
             article.setAuthors(null);
             article.setYear(VALID_YEAR);
-
+            
             assertFalse("Valid object marked as invalid ", articleService.check(article).size() == 0);
             articleService.insert(article);
             tm.commitTransaction();

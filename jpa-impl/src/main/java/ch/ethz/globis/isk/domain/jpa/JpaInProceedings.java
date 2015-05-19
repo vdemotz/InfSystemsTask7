@@ -2,9 +2,11 @@ package ch.ethz.globis.isk.domain.jpa;
 
 import ch.ethz.globis.isk.domain.InProceedings;
 import ch.ethz.globis.isk.domain.Proceedings;
+
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 @Entity(name = "InProceedings")
 public class JpaInProceedings extends JpaPublication implements InProceedings {
@@ -15,6 +17,7 @@ public class JpaInProceedings extends JpaPublication implements InProceedings {
 
     @ManyToOne(targetEntity = JpaProceedings.class)
     @JoinColumn(name = "proceedings_id")
+    @NotNull
     private Proceedings proceedings;
 
     public JpaInProceedings() {

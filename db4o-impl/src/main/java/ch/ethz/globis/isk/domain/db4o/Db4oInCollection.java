@@ -1,7 +1,10 @@
 package ch.ethz.globis.isk.domain.db4o;
 
+import javax.validation.constraints.NotNull;
+
 import ch.ethz.globis.isk.domain.Book;
 import ch.ethz.globis.isk.domain.InCollection;
+
 import com.db4o.activation.ActivationPurpose;
 import com.db4o.ta.Activatable;
 
@@ -11,6 +14,7 @@ public class Db4oInCollection extends Db4oPublication implements InCollection, A
 
     private String pages;
 
+    @NotNull
     private Book parentPublication;
 
     public Db4oInCollection() {

@@ -1,7 +1,10 @@
 package ch.ethz.globis.isk.domain.db4o;
 
+import javax.validation.constraints.NotNull;
+
 import ch.ethz.globis.isk.domain.InProceedings;
 import ch.ethz.globis.isk.domain.Proceedings;
+
 import com.db4o.activation.ActivationPurpose;
 import com.db4o.ta.Activatable;
 
@@ -11,6 +14,7 @@ public class Db4oInProceedings extends Db4oPublication implements InProceedings,
 
     private String pages;
 
+    @NotNull
     private Proceedings proceedings;
 
     public Db4oInProceedings() {

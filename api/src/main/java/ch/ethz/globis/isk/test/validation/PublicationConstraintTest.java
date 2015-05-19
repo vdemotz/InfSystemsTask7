@@ -729,6 +729,7 @@ public class PublicationConstraintTest {
         tm.beginTransaction();
         conference.setName(CONFERENCE_NEW_NAME);
         conferenceService.update(conference);
+        
         tm.commitTransaction();
         
         tm.beginTransaction();

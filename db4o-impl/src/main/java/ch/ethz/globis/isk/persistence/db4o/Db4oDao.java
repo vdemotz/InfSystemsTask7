@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Repository
 public abstract class Db4oDao<K extends Serializable, T extends DomainObject> implements Dao<K, T> {
@@ -132,7 +133,7 @@ public abstract class Db4oDao<K extends Serializable, T extends DomainObject> im
 		try {
 			for (PropertyDescriptor pd : Introspector.getBeanInfo(entity.getClass()).getPropertyDescriptors()) {
 				  if (pd.getReadMethod() != null && !"class".equals(pd.getName())) {
-					  pd.getWriteMethod().invoke(prevEntity, pd.getReadMethod().invoke(entity));
+					  pd.getWriteMethod().invoke(prevEntity, (pd.getReadMethod().invoke(entity)));
 				  }
 			}
 		} catch (Exception e) {

@@ -1,7 +1,10 @@
 package ch.ethz.globis.isk.domain.db4o;
 
+import javax.validation.constraints.Pattern;
+
 import ch.ethz.globis.isk.domain.Article;
 import ch.ethz.globis.isk.domain.JournalEdition;
+
 import com.db4o.activation.ActivationPurpose;
 import com.db4o.ta.Activatable;
 
@@ -9,6 +12,7 @@ public class Db4oArticle extends Db4oPublication implements Article, Activatable
 
     private String cdrom;
 
+    @Pattern(regexp="null|[0-9]+-[0-9]+|[0-9]+")
     private String pages;
 
     private JournalEdition journalEdition;

@@ -1,8 +1,11 @@
 package ch.ethz.globis.isk.domain.db4o;
 
+import javax.validation.constraints.NotNull;
+
 import ch.ethz.globis.isk.domain.Conference;
 import ch.ethz.globis.isk.domain.ConferenceEdition;
 import ch.ethz.globis.isk.domain.Proceedings;
+
 import com.db4o.activation.ActivationPurpose;
 import com.db4o.activation.Activator;
 import com.db4o.ta.Activatable;
@@ -13,8 +16,10 @@ public class Db4oConferenceEdition implements ConferenceEdition, Activatable {
 
     private Integer year;
 
+    @NotNull
     private Conference conference;
 
+    @NotNull
     private Proceedings proceedings;
 
     private transient Activator activator;

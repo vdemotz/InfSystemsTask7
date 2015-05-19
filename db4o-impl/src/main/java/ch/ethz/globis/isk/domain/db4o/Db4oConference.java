@@ -2,12 +2,17 @@ package ch.ethz.globis.isk.domain.db4o;
 
 import ch.ethz.globis.isk.domain.Conference;
 import ch.ethz.globis.isk.domain.ConferenceEdition;
+
 import com.db4o.activation.ActivationPurpose;
 import com.db4o.activation.Activator;
 import com.db4o.collections.ActivatableHashSet;
 import com.db4o.collections.ActivatableSet;
 import com.db4o.ta.Activatable;
+
+import java.util.HashSet;
 import java.util.Set;
+
+import javax.validation.constraints.NotNull;
 
 public class Db4oConference implements Conference, Activatable {
 
@@ -15,6 +20,7 @@ public class Db4oConference implements Conference, Activatable {
 
     private String name;
 
+    @NotNull
     private ActivatableSet<ConferenceEdition> editions;
 
     private transient Activator activator;
@@ -40,7 +46,7 @@ public class Db4oConference implements Conference, Activatable {
 
     public void setEditions(Set<ConferenceEdition> editions) {
         activate(ActivationPurpose.WRITE);
-        this.editions.clear();
+        this.editions = new ActivatableHashSet<ConferenceEdition>();
         this.editions.addAll(editions);
     }
 

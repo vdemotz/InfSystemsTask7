@@ -2,23 +2,35 @@ package ch.ethz.globis.isk.domain.db4o;
 
 import ch.ethz.globis.isk.domain.Person;
 import ch.ethz.globis.isk.domain.Publication;
+
 import com.db4o.activation.ActivationPurpose;
 import com.db4o.activation.Activator;
 import com.db4o.collections.ActivatableHashSet;
 import com.db4o.collections.ActivatableSet;
 import com.db4o.ta.Activatable;
+
 import java.util.Set;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class Db4oPublication implements Publication, Activatable {
 
     private String id;
 
+    @NotNull
     private String title;
 
     private String electronicEdition;
 
+    @Min(1901)
+    @Max(2015)
     private int year;
 
+    @NotNull
+    @Size(min = 1)
     private ActivatableSet<Person> authors;
 
     private ActivatableSet<Person> editors;

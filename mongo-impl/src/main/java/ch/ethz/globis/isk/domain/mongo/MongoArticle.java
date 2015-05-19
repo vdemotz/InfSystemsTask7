@@ -1,7 +1,10 @@
 package ch.ethz.globis.isk.domain.mongo;
 
+import javax.validation.constraints.Pattern;
+
 import ch.ethz.globis.isk.domain.Article;
 import ch.ethz.globis.isk.domain.JournalEdition;
+
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -11,6 +14,7 @@ public class MongoArticle extends MongoPublication implements Article {
 
     private String cdrom;
 
+    @Pattern(regexp="null|[0-9]+-[0-9]+|[0-9]+")
     private String pages;
 
     @DBRef(lazy = true)

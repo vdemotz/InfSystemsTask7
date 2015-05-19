@@ -1,8 +1,11 @@
 package ch.ethz.globis.isk.domain.mongo;
 
+import javax.validation.constraints.NotNull;
+
 import ch.ethz.globis.isk.domain.Conference;
 import ch.ethz.globis.isk.domain.ConferenceEdition;
 import ch.ethz.globis.isk.domain.Proceedings;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,9 +19,11 @@ public class MongoConferenceEdition implements ConferenceEdition {
     private Integer year;
 
     @DBRef(lazy = true)
+    @NotNull
     private Conference conference;
 
     @DBRef(lazy = true)
+    @NotNull
     private Proceedings proceedings;
 
     public MongoConferenceEdition() {

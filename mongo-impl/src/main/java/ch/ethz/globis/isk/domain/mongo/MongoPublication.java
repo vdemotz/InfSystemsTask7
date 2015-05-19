@@ -2,11 +2,18 @@ package ch.ethz.globis.isk.domain.mongo;
 
 import ch.ethz.globis.isk.domain.Person;
 import ch.ethz.globis.isk.domain.Publication;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Document(collection = "publication")
 public class MongoPublication implements Publication {
@@ -14,13 +21,18 @@ public class MongoPublication implements Publication {
     @Id
     private String id;
 
+    @NotNull
     private String title;
 
     private String electronicEdition;
 
+    @Min(1901)
+    @Max(2015)
     private int year;
 
     @DBRef(lazy = true)
+    @NotNull
+    @Size(min = 1)
     private Set<Person> authors;
 
     @DBRef(lazy = true)

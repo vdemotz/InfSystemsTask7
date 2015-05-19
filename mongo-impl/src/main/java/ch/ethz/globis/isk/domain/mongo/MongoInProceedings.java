@@ -1,7 +1,10 @@
 package ch.ethz.globis.isk.domain.mongo;
 
+import javax.validation.constraints.NotNull;
+
 import ch.ethz.globis.isk.domain.InProceedings;
 import ch.ethz.globis.isk.domain.Proceedings;
+
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -13,6 +16,7 @@ public class MongoInProceedings extends MongoPublication implements InProceeding
     private String pages;
 
     @DBRef(lazy = true)
+    @NotNull
     private Proceedings proceedings;
 
     public MongoInProceedings() {

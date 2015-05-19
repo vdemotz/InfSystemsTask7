@@ -1,7 +1,10 @@
 package ch.ethz.globis.isk.domain.mongo;
 
+import javax.validation.constraints.NotNull;
+
 import ch.ethz.globis.isk.domain.Book;
 import ch.ethz.globis.isk.domain.InCollection;
+
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -13,6 +16,7 @@ public class MongoInCollection extends MongoPublication implements InCollection 
     private String pages;
 
     @DBRef(lazy = true)
+    @NotNull
     private Book parentPublication;
 
     public MongoInCollection() {

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -138,17 +139,25 @@ public abstract class MongoDao<K extends Serializable, T extends DomainObject> i
 		query.addCriteria(Criteria.where("id").is(entity.getId()));
 		Update update = new Update();
 		try {
-			for (PropertyDescriptor pd : Introspector.getBeanInfo(entity.getClass()).getPropertyDescriptors()) {
+			PropertyDescriptor[] pdEntityArray = Introspector.getBeanInfo(entity.getClass()).getPropertyDescriptors();
+			for (PropertyDescriptor pd : Introspector.getBeanInfo(getStoredClass()).getPropertyDescriptors()) {
 				  if (pd.getReadMethod() != null && !"class".equals(pd.getName())) {
-					  update.set(pd.getName(), pd.getReadMethod().invoke(entity));
+					  Method readMethod = null;
+					  for (PropertyDescriptor pdEntity : pdEntityArray) {
+						  if (pdEntity.getName().equals(pd.getName())) {
+							  readMethod = pdEntity.getReadMethod();
+							  break;
+						  }
+					  }
+					  update.set(pd.getName(), readMethod.invoke(entity));
 				  }
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		mongoOperations.upsert(query, update, getStoredClass());
-    	return entity;
-
+		return entity;
+    	
     }
 
     protected List<T> queryByReferenceIdOrderByYear(String referenceName, String referenceId) {

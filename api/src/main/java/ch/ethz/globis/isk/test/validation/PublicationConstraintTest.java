@@ -675,11 +675,11 @@ public class PublicationConstraintTest {
     public void conferenceNamePropagation() {
         //insert a valid publication and a parent publication
         tm.beginTransaction();
-
+        
         Conference conference = conferenceService.createEntity();
         conference.setName(CONFERENCE_NAME);
         conference.setId(CONFERENCE_ID);
-
+        
         ConferenceEdition edition1 = conferenceEditionService.createEntity();
         edition1.setId(CONFERENCE_EDITION_1_ID);
         edition1.setConference(conference);
@@ -690,7 +690,7 @@ public class PublicationConstraintTest {
         edition2.setYear(CONFERENCE_EDITION_2_YEAR);
         conference.getEditions().add(edition1);
         conference.getEditions().add(edition2);
-
+        
         Proceedings proceedings1 = proceedingsService.createEntity();
         proceedings1.setId(PROCEEDINGS_1_ID);
         proceedings1.setTitle(PROCEEDINGS_1_TITLE);
@@ -699,7 +699,7 @@ public class PublicationConstraintTest {
         proceedings1.setConferenceEdition(edition1);
         proceedings1.setYear(CONFERENCE_EDITION_1_YEAR);
         edition1.setProceedings(proceedings1);
-
+        
         Proceedings proceedings2 = proceedingsService.createEntity();
         proceedings2.setId(PROCEEDINGS_2_ID);
         proceedings2.setTitle(PROCEEDINGS_2_TITLE);
@@ -708,7 +708,7 @@ public class PublicationConstraintTest {
         proceedings2.setYear(CONFERENCE_EDITION_2_YEAR);
         proceedings2.setConferenceEdition(edition2);
         edition2.setProceedings(proceedings2);
-
+        
         assertTrue("Validation failed on ", proceedingsService.check(proceedings1).size() == 0);
         assertTrue("Validation failed on ", proceedingsService.check(proceedings2).size() == 0);
         proceedingsService.insert(proceedings1);
@@ -726,12 +726,11 @@ public class PublicationConstraintTest {
         assertEquals(CONFERENCE_NAME, conference.getName());
         assertEquals(2, conference.getEditions().size());
         tm.commitTransaction();
-
         tm.beginTransaction();
         conference.setName(CONFERENCE_NEW_NAME);
         conferenceService.update(conference);
         tm.commitTransaction();
-
+        
         tm.beginTransaction();
         conference = conferenceService.findOne(CONFERENCE_ID);
         assertNotNull("Conference should not be null", conference);
@@ -743,6 +742,7 @@ public class PublicationConstraintTest {
             Proceedings proceedings = conferenceEdition.getProceedings();
             assertEquals(expectedTitle, proceedings.getTitle());
         }
+        
         tm.commitTransaction();
     }
 
